@@ -1,16 +1,32 @@
-name: apche and php install
-host: all
-become: yes
-tasks:
-  - name: install apache2
-    apt:
-      name: apache2
-      update_cache: yes
-      state: present
-  - name: install php modules
-    apt:
-      name:
-        - php
-        - libapache2-mod-php
-        - php-mysql
-      state: present
+---
+- name: Install apache and php
+  hosts: all
+  become: yes
+  tasks:
+    - name: install apache2
+      apt:
+        name: apache2
+        update_cache: yes
+        state: present
+    - name: install php modules
+      apt:
+        name:
+          - php
+          - libapache2-mod-php
+          - php-mysql
+        state: present
+    - name: creat info.php
+      copy: create info.php
+      dest: /var/www/html/info.php
+      content: |
+        <?php
+        phpinfo();
+        ?>
+      notify:
+        - Restart apache2
+  handlers:
+    - name: Restart apache2
+      service:
+        name: apache2
+        enabled: yes
+        state: restarted
