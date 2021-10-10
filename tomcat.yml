@@ -1,0 +1,12 @@
+---
+- name: Install java and tomcat
+  hosts: all
+  become: yes
+  tasks:
+    - name: install java and tomcat
+      dnf:
+        name:
+          - java-1.8.0
+          - tomcat
+        update_cache: yes
+        state: present
