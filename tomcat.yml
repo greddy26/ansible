@@ -5,8 +5,6 @@
   tasks:
     - name: install java and tomcat
       dnf:
-        name:
-          - java-1.8.0
-          - tomcat
+        name: java-1.8.0
         update_cache: yes
         state: present
