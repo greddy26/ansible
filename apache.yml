@@ -1,31 +1,37 @@
 ---
-- name: Install apache2 and php
-  hosts: all
+- name: Insall apache and php
+  hosts:
   become: yes
   tasks:
-    - name: install apache2
-      apt:
-        name: apache2
-        update_cache: yes
+    - name: information about node and variables loaded
+      debug:
+        msg: "node os is {{ ansible_facts['distribution'] }} package name is {{package}} and info location is {{info_Location}} and php packages are {{php_package}}"
+    - name: fail on unsupported
+      fail:
+        msg: This playbook supports only RedHat 8 and ubuntu 18
+      when:
+        - ansible_facts['distribution'] != "RedHat"
+        - ansible_facts['distribution'] != "ubuntu"
+        - (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] != "8")
+        - (ansible_facts['distribution'] == "ubuntu" and ansible_facts['distribution_major_version'] != "18")
+    - name: install apache
+      package:
+        name: "{{package}}"
         state: present
-    - name: install php
-      apt:
-        name:
-          - php
-          - libapache2-mod-php
-          - php-mysql
+    - name: install httpd
+      package:
+        name: "{{package}}"
+        state: present
     - name: create info.php
       copy:
-        dest: /var/www/html/info.php
+        dest: { { info_Location } }
         content: |
           <?php
           phpinfo();
           ?>
-      notify:
-        - Restart apache2
-  handlers:
-    - name: Restart apache2
+      notify: Restart apache
+    - name: Restart apache
       service:
-        name: apache2
+        name: "{{package}}"
         enabled: yes
         state: restarted
