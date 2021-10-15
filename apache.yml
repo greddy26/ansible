@@ -24,7 +24,7 @@
         state: present
     - name: create info.php
       copy:
-        dest: { { info_Location } }
+        dest: "{{ info_Location }}"
         content: |
           <?php
           phpinfo();
