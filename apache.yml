@@ -1,6 +1,6 @@
 ---
 - name: Insall apache and php
-  hosts:
+  hosts: webserver
   become: yes
   tasks:
     - name: information about node and variables loaded
