@@ -1,34 +1,39 @@
 ---
-- name: Insall apache and php
+- name: Install apache and php
   hosts: webserver
   become: yes
   tasks:
-    - name: fail on unsupported
+    - name: fail on unsupported versions
       fail:
-        msg: This playbook supports only RedHat 8 and ubuntu 18
+        msg: This playbook supports only centos 7 and ubuntu 20 distributions
       when:
-        - ansible_facts['distribution'] != "RedHat"
-        - ansible_facts['distribution'] != "ubuntu"
-        - (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] != "8")
-        - (ansible_facts['distribution'] == "ubuntu" and ansible_facts['distribution_major_version'] != "18")
+        - ansible_facts['distribution'] != "Ubuntu"
+        - ansible_facts['distribution'] != "CentOS"
+        - (ansible_facts['distribution'] == "Ubuntu" and  ansible_facts['distribution_major_version'] != "20")
+        - (ansible_facts['distribution'] == "CentOS" and ansible_facts['distribution_major_version'] != "7")
+    - name: information about node and the variables loaded
+      debug:
+        msg: "Node os is {{ ansible_facts['distribution'] }}  package name is {{ package }} and the info location is  {{ info_location }} and the php packages are {{ php_packages }}"
     - name: install apache
       package:
-        name: "{{package}}"
+        name: "{{ package }}"
         state: present
-    - name: install httpd
+    - name: install php modules
       package:
-        name: "{{package}}"
+        name: "{{ php_packages }}"
         state: present
     - name: create info.php
       copy:
-        dest: "{{ info_Location }}"
+        dest: "{{ info_location }}"
         content: |
-          <?php
-          phpinfo();
+          <?php 
+          phpinfo(); 
           ?>
-      notify: Restart apache
-    - name: Restart apache
+      notify:
+        - Restart Apache
+  handlers:
+    - name: Restart Apache
       service:
-        name: "{{package}}"
+        name: "{{ package }}"
         enabled: yes
         state: restarted
