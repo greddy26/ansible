@@ -5,7 +5,7 @@
   tasks:
     - name: information about node and variables loaded
       debug:
-        msg: "node os is {{ ansible_facts['distribution'] }} package name is {{package}} and info location is {{info_Location}} and php packages are {{php_package}}"
+        msg: "Node os is {{ ansible_facts['distribution'] }}  package name is {{ package }} and the info location is  {{ info_location }} and the php packages are {{ php_packages }}"
     - name: fail on unsupported
       fail:
         msg: This playbook supports only RedHat 8 and ubuntu 18
