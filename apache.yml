@@ -11,6 +11,9 @@
         - ansible_facts['distribution'] != "ubuntu"
         - (ansible_facts['distribution'] == "RedHat" and ansible_facts['distribution_major_version'] != "8")
         - (ansible_facts['distribution'] == "ubuntu" and ansible_facts['distribution_major_version'] != "18")
+    - name:
+      debug:
+        msg: "Node os is {{ansible_facts['distribution']}} package name is {{package}} and info location is {{info_Location}} php packages are {{php_package}}"
     - name: install apache
       package:
         name: "{{package}}"
