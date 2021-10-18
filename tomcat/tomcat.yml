@@ -9,7 +9,7 @@
     tomcat_shell: /bin/false
     tomcat_version: "9.0.35"
   tasks:
-    - name: install java
+    - name: update package and install java
       ansible.builtin.apt:
         name: "{{ java_package }}"
         update_cache: yes
