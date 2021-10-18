@@ -1,0 +1,30 @@
+---
+- name: install and configure tomcat
+  hosts: appserver
+  become: yes
+  vars:
+    Java_package: openjdk-11-jdk
+    tomcat_username: tomcat
+    tomact_home: /opt/tomcat
+    tomcat_shell: /bin/false
+    tomcat_version: "9.0.35"
+  tasks:
+    - name: install java
+      ansible.builtin.apt:
+        name: "{{ java_package }}"
+        update_cache: yes
+        state: present
+    - name: add user tomcat
+      ansible.builtin.user:
+        name: "{{ tomcat }}"
+        home: "{{ tomcat_home }}"
+        shell: "{{ tomcat_shell }}"
+        state: present
+    - name: download tomcat
+      get_url:
+        url: "https://www-eu.apache.org/dist/tomcat/tomcat-9/v{{ tomcat_version }}/bin/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    - name: untar the tomcat package
+      ansible.builtin.unarchive:
+        src: "/tmp/apache-tomcat-{{ tomcat_version }}.tar.gz"
+        dest: "{{ tomcat_home }}"
